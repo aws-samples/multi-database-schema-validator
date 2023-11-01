@@ -1,0 +1,375 @@
+{# templates/html_template.html #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Results</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+        crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+          integrity="sha384-Ft/vb48LwsAEtgltj7o+6vtS2esTU9PCpDqcXs4OCVQFZu5BqprHtUCZ4kjK+bpE"
+          crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+          integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+          crossorigin="anonymous"></script>
+    <style>
+        hr {
+          border-top: 1px solid black;
+        }
+
+        .line {
+          display: inline-block;
+          width: 100%;
+          border-top: 0.2px solid red;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        table {
+          font-family: arial, sans-serif;
+          width: 100%;
+        }
+
+
+         table, th, td {
+              border: 1.5px solid;
+           }
+
+         body {
+            font:10pt Arial,Helvetica,sans-serif;
+             color:black;
+             background:White;
+         }
+         p {
+            font:10pt Arial,Helvetica,sans-serif;
+             color:black;
+             background:White;
+         }
+         table,tr,td {
+            font:10pt Arial,Helvetica,sans-serif;
+             color:Black;
+             background:#f7f7e7;
+             padding:0px 0px 0px 0px;
+             margin:0px 0px 0px 0px;
+         }
+         th {
+            font:bold 10pt Arial,Helvetica,sans-serif;
+             color:#336699;
+             background:#cccc99;
+             padding:0px 0px 0px 0px;
+         }
+         h1 {
+            font:16pt Arial,Helvetica,Geneva,sans-serif;
+             color:#336699;
+             background-color:White;
+             border-bottom:1px solid #cccc99;
+             margin-top:0pt;
+             margin-bottom:0pt;
+             padding:0px 0px 0px 0px;
+        }
+         h2 {
+            font:bold 10pt Arial,Helvetica,Geneva,sans-serif;
+             color:#336699;
+             background-color:White;
+             margin-top:4pt;
+             margin-bottom:0pt;
+         }
+         a {
+            font:9pt Arial,Helvetica,sans-serif;
+             color:#663300;
+             background:#ffffff;
+             margin-top:0pt;
+             margin-bottom:0pt;
+             vertical-align:top;
+         }
+    </style>
+
+</head>
+
+<body>
+  <div class="container" id="top">
+      <h1 style="text-align: center">Database Migration Summary</h1>
+      <br>
+
+      <h5>Contents</h5>
+      <div class="col-sm-6" id="index">
+            <ol class="collapsible">
+                <li>
+                    <div class="collapsible-header" ><a href="#database_details">Database Details</a></div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><a href="#summary_section" target="_parent">Summary Section</a></div>
+                    <ol class="collapsible-body">
+                            <li><a href="#overall_summary" target="_parent">Overall Summary</a></li>
+                            {% for schema, value in comparison_data.items() %}
+                                <li><a href="#overall_{{ schema }}" target="_parent">{{ schema.upper() }}</a></li>
+                            {% endfor %}
+                    </ol>
+                </li>
+                <li>
+                    <div class="collapsible-header"><a href="#schema_wise_summary">Schema Wise Summary</a></div>
+                    <ol class="collapsible-body">
+                        {% for schema, value in comparison_data.items() %}
+                        <li>
+                            <div class="collapsible-header"><a href="#schema_wise_{{ schema }}" style="margin-top: 5px; padding: 5px; display: inline-block;">{{ schema.upper() }}</a></div>
+                            <ol class="collapsible-body">
+                                    {% for object, object_data in value.all_items.items() %}
+                                        <li><a href="#schema_wise_{{ schema }}_{{ object }}" target="_parent">{{ object.upper() }}</a></li>
+                                    {% endfor %}
+                            </ol>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </li>
+            </ol>
+      </div>
+
+      <div class="col-sm-12" id="database_details">
+
+      <br>
+      <h2>Database Configuration Details</h2>
+      <br>
+        <br>
+        <p>
+          <a href="#index"> Previous </a>::<a href="#top"> Top </a>::<a href="#schema_size">Next</a>
+        </p>
+          <table class="table table-hover table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>Engine</th>
+                <th>Database Name</th>
+                <th>Database Host</th>
+                <th>Version</th>
+                <th>Database Size (MB)</th>
+                <th>Character Encoding and Collation</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td>{{ database_summary.source.type }}</td>
+                  <td>{{ database_summary.source.name }}</td>
+                  <td>{{ database_summary.source.host }}</td>
+                  <td>{{ database_summary.source.version }}</td>
+                  <td>{{ database_summary.source.database_size }}</td>
+                  <td>{{ database_summary.source.encoding }}</td>
+                </tr>
+                <tr>
+                  <td>{{ database_summary.target.type }}</td>
+                  <td>{{ database_summary.target.name }}</td>
+                  <td>{{ database_summary.target.host }}</td>
+                  <td>{{ database_summary.target.version }}</td>
+                  <td>{{ database_summary.target.database_size }}</td>
+                  <td>{{ database_summary.target.encoding }}</td>
+                </tr>
+            </tbody>
+          </table>
+      </div>
+
+      <div class="col-sm-12" id="summary_section">
+          <div id="overall_summary">
+              <h2 class="text-center">Overall Summary</h2>
+              <br>
+              {% if not missing_schemas %}
+                <h5>Missing Schemas: None</h5>
+              {% endif %}
+
+              <table class="table table-hover table-bordered table-sm">
+                  <thead>
+                    <tr><th>Missing Schemas</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for item in missing_schemas %}
+                        <tr>
+                            <td>{{ item }}</td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+              </table>
+
+              <table class="table table-hover table-bordered table-sm">
+                  <thead>
+                       <tr>
+                           <th>Schema</th>
+                           <th>Validation %</th>
+                       </tr>
+                  </thead>
+                  <tbody>
+                      {% for schema, data in summary_data.objects.items() %}
+                        <tr>
+                            <td><a href="#overall_{{ schema }}" target="_parent">{{ schema }}</a></td>
+                            <td>{{ data.validation_percent }}</td>
+                        </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+
+          <hr/>
+
+          <h2 class="text-center">Schema Summary</h2>
+
+          {% for schema, value in summary_data.objects.items() %}
+            <div id="overall_{{ schema }}">
+            <h2>Schema - {{ schema.upper() }}</h2>
+              <table class="table table-hover table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <th>Schema</th>
+                    <th>Validation %</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_table">Table</a></td>
+                        <td>{{ value.table.validation_percent }}</td>
+                        <td>{{ value.table.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_view">Views</a></td>
+                        <td>{{ value.view.validation_percent }}</td>
+                        <td>{{ value.view.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_procedure">Procedures</a></td>
+                        <td>{{ value.procedure.validation_percent }}</td>
+                        <td>{{ value.procedure.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_function">Functions</a></td>
+                        <td>{{ value.function.validation_percent }}</td>
+                        <td>{{ value.function.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_index">Indexes</a></td>
+                        <td>{{ value.index.validation_percent }}</td>
+                        <td>{{ value.index.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_trigger">Triggers</a></td>
+                        <td>{{ value.trigger.validation_percent }}</td>
+                        <td>{{ value.trigger.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_constraint">Constraints</a></td>
+                        <td>{{ value.constraint.validation_percent }}</td>
+                        <td>{{ value.constraint.reason }}</td>
+                      </tr>
+                      <tr>
+                        <td><a href="#schema_wise_{{ schema }}_sequence">Sequences</a></td>
+                        <td>{{ value.sequence.validation_percent }}</td>
+                        <td>{{ value.sequence.reason }}</td>
+                      </tr>
+                </tbody>
+              </table>
+            <br>
+            <a href="#top">Top</a>
+            <hr/>
+            </div>
+          {% endfor %}
+      </div>
+
+      <div class="col-sm-12" id="schema_wise_summary">
+          <h2 class="text-center">Schema wise comparison data</h2>
+          {% for schema, value in comparison_data.items() %}
+                {% if value.display_flag == True %}
+                    <div id="schema_wise_{{ schema }}" class="col-sm-12">
+                        <h3>Schema: {{ schema.upper() }}</h3>
+                            <table class="table table-hover table-bordered table-sm">
+                                <thead class="thead-light">
+                                  <tr>
+                                    <th>Object</th>
+                                    <th>Schema</th>
+                                    <th>Count Source</th>
+                                    <th>Count Target</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    {% for object, object_data in value.all_items.items() %}
+                                          <tr>
+                                            <td><a href="#schema_wise_{{ schema }}_{{ object }}">{{ object.upper() }}</a></td>
+                                            <td>{{ schema }}</td>
+                                            <td>{{ object_data.num_source }}</td>
+                                            <td>{{ object_data.num_target }}</td>
+                                          </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% set previous = [''] %}
+                            {% set visited = [] %}
+                            {% for object, object_data in value.all_items.items() %}
+                                {% if visited %}
+                                    <a href="#schema_wise_{{ schema }}_{{ object }}"> Next </a></p>
+                                    </div>
+                                {% endif %}
+                                {% set temp = visited.append(1) %}
+                                <div  id="schema_wise_{{ schema }}_{{ object }}" class="col-sm-12">
+
+                                    <hr/>
+                                    <h4>{{ object.upper() }}</h4>
+                                    <h5> These are objects present on the source but absent on the target database</h5>
+                                    {% if object_data.objects_source|length > 0 %}
+                                        <h5>Some of the source objects haven't been migrated to target</h5>
+                                    {% endif %}
+                                    <table class="table table-hover table-bordered table-sm">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Object type</th>
+                                                <th>Schema</th>
+                                                <th>Object name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for it in object_data.objects_source %}
+                                                <tr>
+                                                    <td>{{ object.upper() }}</td>
+                                                    <td>{{ schema }}</td>
+                                                    <td>{{ it }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                    <h5> These are objects present only on the target database</h5>
+                                    <table class="table table-hover table-bordered table-sm">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Object type</th>
+                                                <th>Schema</th>
+                                                <th>Object name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for it in object_data.objects_target %}
+                                                <tr>
+                                                    <td>{{ object.upper() }}</td>
+                                                    <td>{{ schema }}</td>
+                                                    <td>{{ it }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    {% if object_data.objects_source|length == 0 and  object_data.objects_target|length == 0 %}
+                                        <h5>There is an exact match between objects on source and target</h5>
+                                    {% endif %}
+                                    <br>
+                                    <p><a href="#top"> Top </a>::<a href="#{{ previous.pop() }}"> Previous </a>::
+                                    {% set current = "schema_wise_" + schema + "_" + object %}
+                                    {% set temp = previous.append(current) %}
+                            {% endfor %}
+                    </div>
+                {% endif %}
+          {% endfor %}
+      </div>
+  </div>
+</body>
+</html>
