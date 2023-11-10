@@ -2,7 +2,7 @@ altgraph==0.17.3
 certifi==2022.12.7
 cffi==1.15.1
 charset-normalizer==3.1.0
-cryptography==39.0.2
+cryptography==41.0.4
 greenlet==2.0.2
 idna==3.4
 Jinja2==3.1.2
