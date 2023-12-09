@@ -15,7 +15,7 @@ psycopg==3.1.8
 psycopg-binary==3.1.8
 psycopg2-binary==2.9.5
 pycparser==2.21
-pyinstaller==5.9.0
+pyinstaller==5.13.1
 pyinstaller-hooks-contrib==2023.1
 pymssql==2.2.7
 PyMySQL==1.0.2
