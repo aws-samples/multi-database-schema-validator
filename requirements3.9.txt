@@ -5,7 +5,7 @@ cryptography==42.0.4
 cx-Oracle==8.3.0
 greenlet==2.0.2
 idna==3.4
-Jinja2==3.1.2
+Jinja2==3.1.4
 MarkupSafe==2.1.2
 numpy==1.24.2
 oracledb==1.2.2
